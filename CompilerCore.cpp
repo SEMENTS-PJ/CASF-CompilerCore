@@ -313,6 +313,28 @@ QList<QString> EXP_Translate(QList<int> &carrierPos,int rfidNum,int rate,int ali
         }
         case INSTRUCT_ALIGN_MID:
         {
+            //middleCarrier - 自然计数车辆号 ， 在carrierPos这个List中，是以0为开始计数
+            int middleCarrier = int(double(carrierPos.count())/2.0 + 0.5);
+
+            outList.append(CMG_Translate(carrierPos.count()));
+
+            //设置中间载体车
+            QString str = MOV_Translate(carrierPos,middleCarrier,1,carrierPos.at(middleCarrier-1));
+            outList.append(str);
+            str.clear();
+
+            //先向左推演
+
+
+            //再向右推演
+            for(int index = middleCarrier - 1;index < carrierPos.count();index++)
+            {
+                //后续车辆等差数量间距
+                int goal = carrierPos.at(index-1) + (index * rate + 1) * RFID_BASE_DEV;
+                str = MOV_Translate(carrierPos,index+1,1,goal);
+                outList.append(str);
+                str.clear();
+            }
 
             break;
         }
